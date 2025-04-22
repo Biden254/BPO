@@ -23,6 +23,7 @@ html, body {
     --color-green-500: oklch(72.3% 0.219 149.579);
     --color-green-600: oklch(62.7% 0.194 149.214);
     --color-green-700: oklch(52.7% 0.154 150.069);
+    --color-green-800: oklch(44.8% 0.119 151.328);
     --color-blue-100: oklch(93.2% 0.032 255.585);
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-blue-500: oklch(62.3% 0.214 259.815);
@@ -393,6 +394,9 @@ html, body {
   .mt-20 {
     margin-top: calc(var(--spacing) * 20);
   }
+  .mb-1 {
+    margin-bottom: calc(var(--spacing) * 1);
+  }
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
@@ -608,6 +612,9 @@ html, body {
   }
   .justify-center {
     justify-content: center;
+  }
+  .gap-4 {
+    gap: calc(var(--spacing) * 4);
   }
   .gap-6 {
     gap: calc(var(--spacing) * 6);
@@ -829,6 +836,9 @@ html, body {
   .px-6 {
     padding-inline: calc(var(--spacing) * 6);
   }
+  .px-7 {
+    padding-inline: calc(var(--spacing) * 7);
+  }
   .py-2 {
     padding-block: calc(var(--spacing) * 2);
   }
@@ -972,6 +982,9 @@ html, body {
   .text-green-600 {
     color: var(--color-green-600);
   }
+  .text-green-800 {
+    color: var(--color-green-800);
+  }
   .text-red-400 {
     color: var(--color-red-400);
   }
@@ -983,6 +996,9 @@ html, body {
   }
   .text-red-700 {
     color: var(--color-red-700);
+  }
+  .text-red-800 {
+    color: var(--color-red-800);
   }
   .text-white {
     color: var(--color-white);
@@ -1106,6 +1122,13 @@ html, body {
       }
     }
   }
+  .hover\:bg-red-600 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-red-600);
+      }
+    }
+  }
   .hover\:text-black {
     &:hover {
       @media (hover: hover) {
@@ -1191,6 +1214,11 @@ html, body {
   .focus\:ring-green-500 {
     &:focus {
       --tw-ring-color: var(--color-green-500);
+    }
+  }
+  .focus\:ring-red-400 {
+    &:focus {
+      --tw-ring-color: var(--color-red-400);
     }
   }
   .focus\:outline-none {
@@ -1365,6 +1393,11 @@ html, body {
   .dark\:text-red-400 {
     &:where(.dark, .dark *) {
       color: var(--color-red-400);
+    }
+  }
+  .dark\:text-red-700 {
+    &:where(.dark, .dark *) {
+      color: var(--color-red-700);
     }
   }
   .dark\:text-white {
@@ -1926,6 +1959,21 @@ a#autoBlur {
   .raisee {
     top: -202px;
   }
+}
+.btn-kitenge-hover:hover {
+  background-image: url("https://img.freepik.com/free-photo/closeup-shot-waving-flag-kenya-with-interesting-textures_181624-9846.jpg?t=st=1745224865~exp=1745228465~hmac=a45786890500ae831cd43e292ae8a5d18a41f451b21d370107af75ee2763a7fe&w=1800");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+.btn-kenyan-flag {
+  background-image: url("https://img.freepik.com/free-photo/closeup-shot-waving-flag-kenya-with-interesting-textures_181624-9846.jpg?t=st=1745224865~exp=1745228465~hmac=a45786890500ae831cd43e292ae8a5d18a41f451b21d370107af75ee2763a7fe&w=1800");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  border: none;
 }
 @property --tw-translate-x {
   syntax: "*";
