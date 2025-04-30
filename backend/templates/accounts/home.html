@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <header>
+        <h1 id="welcome-message">Welcome, {% if user.is_authenticated %}{{ user.username }}{% else %}Guest{% endif %}!</h1>
+        <nav>
+            <ul>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    <li><a href="{% url 'profile' %}">Profile</a></li>
+                    <li><a href="{% url 'change_password' %}">Change Password</a></li>
+                    <li><a href="#" id="delete-account">Delete Account</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Login</a></li>
+                    <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h2>Welcome to the Home Page</h2>
+        <p>This is the home page for our application. You are currently logged in as: 
+            <span id="user-status">
+                {% if user.is_authenticated %}
+                    {{ user.username }}
+                {% else %}
+                    Guest
+                {% endif %}
+            </span>
+        </p>
+
+        <section id="content-section">
+            <h3>Some Information</h3>
+            <p>This is a placeholder for the main content of your home page. You can add any information, features, or functionality here.</p>
+            <button id="toggle-content-button">Toggle Content</button>
+        </section>
+
+        <section id="dynamic-content-section" style="display:none;">
+            <h3>Dynamic Content</h3>
+            <p>This content is displayed dynamically using JavaScript.</p>
+            <ul id="dynamic-list">
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 NFTBO</p>
+    </footer>
+
+    <div id="message-box" class="message-box">
+        <p id="message-text"></p>
+        <button id="message-box-close">Close</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const welcomeMessage = document.getElementById('welcome-message');
+            const userStatus = document.getElementById('user-status');
+            const contentSection = document.getElementById('content-section');
+            const toggleContentButton = document.getElementById('toggle-content-button');
+            const dynamicContentSection = document.getElementById('dynamic-content-section');
+            const dynamicList = document.getElementById('dynamic-list');
+            const deleteAccountButton = document.getElementById('delete-account');
+
+            // Message Box
+            const messageBox = document.getElementById('message-box');
+            const messageText = document.getElementById('message-text');
+            const messageBoxClose = document.getElementById('message-box-close');
+
+            function showMessage(message, type = 'success') {
+                messageText.textContent = message;
+                messageBox.className = `message-box ${type}`;
+                messageBox.style.display = 'block';
+            }
+
+            function hideMessage() {
+                messageBox.style.display = 'none';
+            }
+
+            messageBoxClose.addEventListener('click', hideMessage);
+
+            // Toggle Content
+            toggleContentButton.addEventListener('click', () => {
+                if (contentSection.style.display === 'none') {
+                    contentSection.style.display = 'block';
+                    dynamicContentSection.style.display = 'none';
+                    toggleContentButton.textContent = 'Toggle Dynamic Content';
+                } else {
+                    contentSection.style.display = 'none';
+                    dynamicContentSection.style.display = 'block';
+                    toggleContentButton.textContent = 'Toggle Static Content';
+                    // Fetch and display dynamic data
+                    fetch('/api/dynamic_data/') //  Create a Django URL and view for this
+                        .then(response => response.json())
+                        .then(data => {
+                            dynamicList.innerHTML = ''; // Clear old data
+                            data.forEach(item => {
+                                const li = document.createElement('li');
+                                li.textContent = item.name + ' - ' + item.value;
+                                dynamicList.appendChild(li);
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching dynamic data:', error);
+                            showMessage('Failed to load dynamic data.', 'error');
+                        });
+                }
+            });
+
+            // Delete Account
+            if (deleteAccountButton) { // Only if the button exists (i.e., user is logged in)
+                deleteAccountButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const confirmation = confirm("Are you sure you want to delete your account? This action cannot be undone.");
+                    if (confirmation) {
+                        fetch('/accounts/delete_user/', { //  Create a Django URL and view for this
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': getCookie('csrftoken'), //  You'll need this function
+                            },
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                window.location.href = '/accounts/logout/'; // Redirect
+                            } else {
+                                return response.json().then(data => {
+                                    throw new Error(data.error || 'Failed to delete account');
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting account:', error);
+                            showMessage(error.message, 'error');
+                        });
+                    }
+                });
+            }
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+</body>
+</html>
